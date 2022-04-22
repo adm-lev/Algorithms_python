@@ -6,3 +6,18 @@
 
 """
 
+
+def sipher(start=32, stop=127):
+
+    if stop - start <= 10:
+        i = start
+        while i < stop:
+            print(f'{i}={chr(i)}', end=' ')
+            i += 1
+        print('\n')
+    else:
+        sipher(start, start+10)
+        sipher(start+11, stop)
+
+
+sipher()
