@@ -12,78 +12,34 @@ from collections import deque
 import copy
 
 
-num_a = deque('321E')
-num_b = deque('D456')
-num_c = deque('9990')
-num_d = deque('11999')
-
-
-def dec_sum(a, b):
+def hex_sum(a, b):                                                                 #  Функция складывает числа в столбик
     memory = 0
     res = deque()
     while True:
-        if not a and b:
-            calc = int(b.pop()) + memory
-        elif not b and a:
-            calc = int(a.pop()) + memory
-        else:
-            calc = int(a.pop()) + int(b.pop()) + memory
-
-        if calc >= 10:
-            res.appendleft(calc % 10)
-            memory = calc // 10
-        else:
-            res.appendleft(calc)
-            memory = 0
-        if not a and not b:
-            res.appendleft(memory)
-            break
-
-    return res
-
-
-def hex_sum(a, b):
-    memory = 0
-    res = deque()
-    while True:
-        if not a and b:
+        if not a and b:                                                            #  компенсация неравных длин чисел(1)
             calc = translate_to_dec[b.pop()] + memory
         elif not b and a:
             calc = translate_to_dec[a.pop()] + memory
-        else:
-            calc = translate_to_dec[a.pop()] + translate_to_dec[b.pop()] + memory
-
-        if calc >= 16:
-            res.appendleft(translate_to_hex[calc % 16])
+        else:                                                                      #  перевести два крайних числа
+            calc = translate_to_dec[a.pop()] + translate_to_dec[b.pop()] + memory  #  в десятичную и сложить,
+                                                                                   #  добавив число из памяти.
+        if calc >= 16:                                                             #  Записать единицы в резуультат,
+            res.appendleft(translate_to_hex[calc % 16])                            #  а десятки в память
             memory = calc // 16
         else:
             res.appendleft(translate_to_hex[calc])
             memory = 0
 
-        if not a and not b:
+        if not a and not b:                                                        #  компенсация неравных длин чисел(2)
             res.appendleft(translate_to_hex[memory])
             break
 
     return res
 
 
-def get_raw_dec(c, d):
-    memory = 0
+def get_raw_hex(c, d):                                                      #  Вспомогательная функция для умножения.
+    memory = 0                                                              #  Умножает полное число на одну цифру.
     res = deque()
-
-    while c:
-        calc = int(c.pop()) * int(d) + memory
-        res.appendleft(calc % 10)
-        memory = calc // 10
-    if not c:
-        res.appendleft(memory)
-    return res
-
-
-def get_raw_hex(c, d):
-    memory = 0
-    res = deque()
-
 
     while c:
         calc = translate_to_dec[c.pop()] * translate_to_dec[d] + memory
@@ -94,35 +50,13 @@ def get_raw_hex(c, d):
     return res
 
 
-def dec_product(a, b):
-
-    place = 0
-    rows = []
-
-    while b:
-
-        temp_a = copy.copy(a)
-        temp_row = get_raw_dec(temp_a, b.pop())
-
-        for i in range(place):
-            temp_row.append(0)
-        rows.append(temp_row)
-
-        place += 1
-    res = rows[0]
-
-    for i in range(1, len(rows)):
-        res = dec_sum(res, rows[i])
-    return res
-
-
 def hex_product(a, b):
     place = 0
     rows = []
 
-    while b:
-        temp_a = copy.copy(a)
-        temp_row = get_raw_hex(temp_a, b.pop())
+    while b:                                                                #  Получаем результаты произведения
+        temp_a = copy.copy(a)                                               #  первого числа на каждый из
+        temp_row = get_raw_hex(temp_a, b.pop())                             #  разрядов второго.
 
         for i in range(place):
             temp_row.append('0')
@@ -131,10 +65,22 @@ def hex_product(a, b):
         place += 1
     res = rows[0]
 
-    for i in range(1, len(rows)):
+    for i in range(1, len(rows)):                                            #  Суммируем значения известным способом
         res = hex_sum(res, rows[i])
 
+    while True:                                                              #  Убираем появившиеся слева нули
+        if res[0] == '0':
+            res.popleft()
+        else:
+            break
+
     return res
+
+
+def print_deque(my_deque):
+
+    while my_deque:
+        print(my_deque.popleft(), end='')
 
 
 translate_to_hex = {
@@ -149,13 +95,17 @@ translate_to_dec = {
 }
 
 
+num_a = deque(input('Введите первое шестнадцатеричное число:').upper())
+oper = input('Введите знак операции(* или +)')
+num_b = deque(input('Введите второе шестнадцатеричное число:').upper())
+
+if oper == '*':
+    print_deque(hex_product(num_a, num_b))
+else:
+    print_deque(hex_sum(num_a, num_b))
 
 
 
-# print(dec_sum(num_c, num_d))
-# print(hex_sum(num_a, num_b))
-print(dec_product(num_c, num_d))
-print(hex_product(num_a, num_b))
 
 
 
