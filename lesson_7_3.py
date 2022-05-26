@@ -19,7 +19,7 @@ arr = [randrange(-100, 100) for _ in range(2 * length + 1)]
 
 def new_med(data):
 
-    c = collections.Counter(data)            #  Создается счетчик элементов массива
+    c = collections.Counter(data)            #  Создается счетчик повторяющихся элементов массива
     min_elem = data[0]
     min_times = 0
     sorted_index = 0
