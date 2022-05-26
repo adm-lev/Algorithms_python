@@ -56,11 +56,8 @@ def check(func_a, func_b, my_length):              #  Функция тести�
             print(f'not ok {a} != {b}')
 
 
-
-# print(arr)
-# print(new_med(arr))
-bubble_sort(arr)
-# print(f'bubble:  {arr}')
+print(arr)
+print(f'Медиана массива: {new_med(arr)}')
 
 
 # check(new_med, bubble_sort, length)
